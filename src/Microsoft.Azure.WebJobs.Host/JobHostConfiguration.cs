@@ -351,6 +351,18 @@ namespace Microsoft.Azure.WebJobs
             object service = null;
             _services.TryGetValue(serviceType, out service);
 
+            // Lazily create with default implemetnations
+            if (service == null)
+            {
+                if (_partialInitServices != null)
+                {
+                    if (serviceType == typeof(IDistributedLockManager))
+                    {
+                        service = _partialInitServices.GetService(serviceType);
+                    }
+                }
+            }
+
             return service;
         }
 
