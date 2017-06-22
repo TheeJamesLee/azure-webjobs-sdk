@@ -70,7 +70,7 @@ namespace Microsoft.Azure.WebJobs.Host.UnitTests.Singleton
                 return Task.FromResult(true);
             }
 
-            public Task<IDistributedLock> TryLockAsync(string account, string lockId, string lockOwnerId, TimeSpan lockPeriod, CancellationToken cancellationToken)
+            public Task<IDistributedLock> TryLockAsync(string account, string lockId, string lockOwnerId, string proposedLeaseId, TimeSpan lockPeriod, CancellationToken cancellationToken)
             {
                 FakeLock entry = null;
                 lock (_locks)
