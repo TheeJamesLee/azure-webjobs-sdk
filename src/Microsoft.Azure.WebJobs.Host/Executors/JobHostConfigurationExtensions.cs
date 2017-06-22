@@ -110,7 +110,7 @@ namespace Microsoft.Azure.WebJobs.Host.Executors
             };
             InvokeExtensionConfigProviders(context);
 
-            // $$$ Lock here!!!! 
+            // After this point, all user configuration has been set. 
 
             if (singletonManager == null)
             {

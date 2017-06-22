@@ -130,8 +130,6 @@ namespace Microsoft.Azure.WebJobs.Host
             bool blobDoesNotExist = false;
             try
             {
-                // $$$  - may need to allow specifying leaseId. 
-
                 // Optimistically try to acquire the lease. The blob may not yet
                 // exist. If it doesn't we handle the 404, create it, and retry below
                 return await blob.AcquireLeaseAsync(leasePeriod, proposedLeaseId, cancellationToken);

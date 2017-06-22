@@ -25,7 +25,7 @@ namespace Microsoft.Azure.WebJobs.Host
         /// <param name="account">a string specifying the account to use. LockIds are scoped to an account </param>
         /// <param name="lockId">the name of the lock. </param>
         /// <param name="lockOwnerId">a string hint specifying who owns this lock. </param>
-        /// <param name="proposedLeaseId">optional. </param>
+        /// <param name="proposedLeaseId">optional. This can allow the caller to immediately assume the lease.</param>
         /// <param name="lockPeriod">As this period nears expiry, the lock will be automatically renewed.</param>
         /// <param name="cancellationToken"></param>
         /// <returns>null if can't acquire the lock. This is common if somebody else holds it.</returns>
