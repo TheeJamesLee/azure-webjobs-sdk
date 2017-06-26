@@ -9,6 +9,7 @@ namespace Microsoft.Azure.WebJobs.Host
 {
     /// <summary>
     /// Handle for a lock returned by <see cref="IDistributedLockManager"/>
+    /// The SDK will call call <see cref="IDistributedLockManager.RenewAsync(IDistributedLock, CancellationToken)"/> to renew the release.
     /// </summary>
     public interface IDistributedLock
     {
@@ -16,11 +17,5 @@ namespace Microsoft.Azure.WebJobs.Host
         /// The Lock identity.  
         /// </summary>
         string LockId { get; }
-
-        /// <summary>
-        /// Task is set to completed if the lease is lost (after it's been acquired). 
-        /// This allows consumers to get a notification if the lock failed to be renewed. 
-        /// </summary>
-        Task LeaseLost { get; }
     }
 }

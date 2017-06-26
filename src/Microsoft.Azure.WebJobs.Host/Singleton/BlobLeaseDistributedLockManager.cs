@@ -314,12 +314,10 @@ namespace Microsoft.Azure.WebJobs.Host
                 }
             }
         }
-        
+
         internal class SingletonLockHandle : IDistributedLock
         {
             private readonly TimeSpan _leasePeriod;
-
-            private readonly TaskCompletionSource<bool> _lockLost = new TaskCompletionSource<bool>();
 
             private DateTimeOffset _lastRenewal;
             private TimeSpan _lastRenewalLatency;
@@ -339,8 +337,6 @@ namespace Microsoft.Azure.WebJobs.Host
             public string LeaseId { get; internal set; }
             public string LockId { get; internal set; }
             public IStorageBlockBlob Blob { get; internal set; }
-
-            public Task LeaseLost => _lockLost.Task;
 
             public async Task<bool> RenewAsync(TraceWriter trace, ILogger logger, CancellationToken cancellationToken)
             {
@@ -380,9 +376,7 @@ namespace Microsoft.Azure.WebJobs.Host
                             this.LockId, FormatErrorCode(exception), lastRenewalFormatted, millisecondsSinceLastSuccess, lastRenewalMilliseconds, leasePeriodMilliseconds);
                         trace.Error(msg);
                         logger?.LogError(msg);
-
-                        this.NotifyLostLease();
-
+                        
                         // If we've lost the lease or cannot re-establish it, we want to fail any
                         // in progress function execution
                         throw;
@@ -408,12 +402,7 @@ namespace Microsoft.Azure.WebJobs.Host
                 }
 
                 return message;
-            }
-
-            internal void NotifyLostLease()
-            {
-                _lockLost.SetResult(true);
-            }
+            }            
         }
     }
 }

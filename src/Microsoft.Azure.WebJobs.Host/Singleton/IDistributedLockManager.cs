@@ -9,24 +9,24 @@ using Microsoft.Azure.WebJobs.Host.Executors;
 namespace Microsoft.Azure.WebJobs.Host
 {
     /// <summary>
-    /// Manage distributed lock. A lock is specified by (account, lockId). 
+    /// Manage distributed lock. A lock is specified by (account, lockId).  This implementation should cooperate with <see cref="SingletonConfiguration"/>
     /// </summary>
     /// <remarks>
     /// The default implementation of this is based on blob leases. 
     /// 1. Account can be null or it may be a storage account name intended for <see cref="IStorageAccountProvider"/>. 
-    /// 2. lockId has the same naming restrictions as blobs. 
-    /// 3. For distributed locks, this implementation is responsible for renewing the locks and setting <see cref="IDistributedLock.LeaseLost"/> if the lock can't be renewed. 
+    /// 2. lockId has the same naming restrictions as blobs.     
     /// </remarks>    
     public interface IDistributedLockManager
-    {
+    {        
         /// <summary>
         /// Try to acquire a lock specified by (account, lockId).                 
         /// </summary>
-        /// <param name="account">a string specifying the account to use. LockIds are scoped to an account </param>
+        /// <param name="account">optional. A string specifying the account to use. LockIds are scoped to an account </param>
         /// <param name="lockId">the name of the lock. </param>
-        /// <param name="lockOwnerId">a string hint specifying who owns this lock. </param>
+        /// <param name="lockOwnerId">a string hint specifying who owns this lock. Only used for diagnostics. </param>
         /// <param name="proposedLeaseId">optional. This can allow the caller to immediately assume the lease.</param>
-        /// <param name="lockPeriod">As this period nears expiry, the lock will be automatically renewed.</param>
+        /// <param name="lockPeriod">The length of the lease to acquire. The caller is responsible for Renewing the lease well before this time is up. 
+        /// The exact value here is restricted based on the underlying implementation.  </param>
         /// <param name="cancellationToken"></param>
         /// <returns>null if can't acquire the lock. This is common if somebody else holds it.</returns>
         Task<IDistributedLock> TryLockAsync(
@@ -54,8 +54,8 @@ namespace Microsoft.Azure.WebJobs.Host
         /// This is used for diagnostics. The lock owner can change immediately after this function returned, so callers 
         /// can't be guaranteed the owner still the same. 
         /// </summary>
-        /// <param name="account"></param>
-        /// <param name="lockId"></param>
+        /// <param name="account">optional. A string specifying the account to use. LockIds are scoped to an account </param>
+        /// <param name="lockId">the name of the lock. </param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<string> GetLockOwnerAsync(
@@ -66,7 +66,7 @@ namespace Microsoft.Azure.WebJobs.Host
         /// <summary>
         /// Release a lock that was previously acquired via TryLockAsync.
         /// </summary>
-        /// <param name="lockHandle"></param>
+        /// <param name="lockHandle">previously acquired handle to be released</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task ReleaseLockAsync(
