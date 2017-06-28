@@ -222,5 +222,10 @@ namespace Microsoft.Azure.WebJobs.Host.TestCommon
                 return Task.FromResult(account);
             }
         }
+
+        public static IJobHostMetadataProvider CreateMetadataProvider(this JobHost host)
+        {
+            return host.Services.GetService<IJobHostMetadataProvider>();
+        }
     }
 }

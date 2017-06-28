@@ -444,7 +444,7 @@ namespace Microsoft.Azure.WebJobs.Host.UnitTests
             config.AddService<INameResolver>(nameResolver);
 
             //  Now succeeds when called on JobHost instead of Config object. 
-            lockManager = host.GetService<IDistributedLockManager>();
+            lockManager = host.Services.GetService<IDistributedLockManager>();
             Assert.NotNull(lockManager);
             Assert.IsType<TestLockManager>(lockManager); // verify it's our custom type             
         }

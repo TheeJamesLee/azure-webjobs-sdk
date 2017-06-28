@@ -24,7 +24,7 @@ namespace Microsoft.Azure.WebJobs
     /// A <see cref="JobHost"/> is the execution container for jobs. Once started, the
     /// <see cref="JobHost"/> will manage and run job functions when they are triggered.
     /// </summary>
-    public class JobHost : IDisposable, IServiceProvider
+    public class JobHost : IDisposable
     {
         private const int StateNotStarted = 0;
         private const int StateStarting = 1;
@@ -413,26 +413,15 @@ namespace Microsoft.Azure.WebJobs
         }
 
         /// <summary>
-        /// Creates a <see cref="IJobHostMetadataProvider"/> for this configuration.
+        /// Get set of services. 
         /// </summary>
-        /// <returns>The <see cref="IJobHostMetadataProvider"/>.</returns>
-        public IJobHostMetadataProvider CreateMetadataProvider()
+        public IServiceProvider Services
         {
-            PopulateStaticServices();
-            return this.GetService<IJobHostMetadataProvider>();            
-        }
-
-        /// <summary>Gets the service object of the specified type.</summary>
-        /// <param name="serviceType">The type of service to get.</param>
-        /// <returns>
-        /// A service of the specified type, if one is available; otherwise, <see langword="null"/>.
-        /// </returns>
-        public object GetService(Type serviceType)
-        {
-            PopulateStaticServices();     
-            
-            var result = _services.GetService(serviceType);
-            return result;
+            get
+            {
+                PopulateStaticServices();
+                return _services;
+            }
         }
     }
 }
